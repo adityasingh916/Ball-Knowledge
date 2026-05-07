@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './views/Home';
 import Teams from './views/Teams';
-import Venues from './views/Venues';
 import Players from './views/Players';
 import SquadBuilder from './views/SquadBuilder';
 
@@ -27,7 +26,6 @@ function App() {
             {/* The ":id" part is a dynamic parameter. It allows us to go to "/teams/4819" and grab the ID inside the Teams component */}
             <Route path="/teams/:id" element={<Teams />} />
             
-            <Route path="/venues" element={<Venues />} />
             <Route path="/players" element={<Players />} />
             <Route path="/players/:id" element={<Players />} />
             <Route path="/squad-builder" element={<SquadBuilder />} />
