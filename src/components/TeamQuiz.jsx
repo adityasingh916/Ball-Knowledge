@@ -34,7 +34,7 @@ const TeamQuiz = ({ teamId, teamName, onExit }) => {
       } else {
         setShowResult(true);
       }
-    }, 1000); // 1 second delay to show right/wrong colors
+    }, 1000); 
   };
 
   const getKnowledgeLevel = (finalScore) => {
