@@ -1,24 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// We accept props (teamData, imageUrl, squadData) passed down from the parent component (Teams.jsx)
 const TeamProfile = ({ teamData, imageUrl, squadData }) => {
-  // useNavigate is a hook that gives us a function to change the URL programmatically
   const navigate = useNavigate();
 
-  // Conditional Rendering: If we don't have team data yet, render nothing (null)
   if (!teamData || !teamData.team) return null;
-  
-  // Destructuring the teamData object to easily access 'team' and 'pregameForm' variables
   const { team, pregameForm } = teamData;
 
-  // This function is triggered when the user clicks on a player card
   const handlePlayerClick = (id) => {
-    // Navigate to the player's profile page using their specific ID
     navigate(`/players/${id}`);
   };
 
-  // Helper function to format large numbers with commas (e.g., 50000 -> 50,000)
   const formatNumber = (num) => {
     if (!num) return 'N/A';
     return new Intl.NumberFormat('en-US').format(num);
@@ -93,13 +85,10 @@ const TeamProfile = ({ teamData, imageUrl, squadData }) => {
           </div>
         </div>
 
-        {/* Conditional Rendering: Only show the squad section if squadData exists and has items */}
         {squadData && squadData.length > 0 && (
           <div className="squad-section mt-4">
             <h3 className="squad-title">Projected Starting XI</h3>
             <div className="squad-grid starting-xi-grid">
-              {/* List Rendering: We take the first 11 players and use .map() to create HTML elements for each one */}
-              {/* Every item in a mapped list needs a unique 'key' prop (we use the player ID) */}
               {squadData.slice(0, 11).map((squadMember) => (
                 <div 
                   key={squadMember.player.id} 
@@ -112,7 +101,7 @@ const TeamProfile = ({ teamData, imageUrl, squadData }) => {
                     alt={squadMember.player.name}
                     className="squad-player-img"
                   />
-                  {/* If the player has a shortName, use it, otherwise fallback to their full name */}
+                 
                   <span className="squad-player-name">{squadMember.player.shortName || squadMember.player.name}</span>
                 </div>
               ))}
