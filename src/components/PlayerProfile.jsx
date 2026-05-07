@@ -3,7 +3,6 @@ import React from 'react';
 const PlayerProfile = ({ player, imageUrl }) => {
   if (!player) return null;
 
-  // Calculate age from dateOfBirth
   const getAge = (dateString) => {
     if (!dateString) return 'N/A';
     const today = new Date();
@@ -16,7 +15,6 @@ const PlayerProfile = ({ player, imageUrl }) => {
     return age;
   };
 
-  // Format market value
   const formatValue = (value, currency) => {
     if (!value) return 'N/A';
     const formatter = new Intl.NumberFormat('en-US', {
