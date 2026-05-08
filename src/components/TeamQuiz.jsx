@@ -15,10 +15,10 @@ const TeamQuiz = (props) => {
 
   if (questions === undefined || questions.length === 0) {
     return (
-      <div className="quiz-container empty-state">
-        <h2 className="quiz-title">No quiz available for {teamName} yet!</h2>
+      <div className="quiz-box">
+        <h2 className="title">No quiz available for {teamName} yet!</h2>
         <p style={{marginBottom: '2rem'}}>Check back later for more Ball Knowledge challenges.</p>
-        <button onClick={onExit} className="quiz-btn">Return to Profile</button>
+        <button onClick={onExit} className="button">Return to Profile</button>
       </div>
     );
   }
@@ -56,43 +56,43 @@ const TeamQuiz = (props) => {
 
   if (showResult === true) {
     return (
-      <div className="quiz-container">
-        <div className="quiz-result">
-          <h2 className="quiz-title">{teamName} Quiz Results</h2>
-          <div className="score-display">
+      <div className="quiz-box">
+        <div className="result-box">
+          <h2 className="title">{teamName} Quiz Results</h2>
+          <div className="score">
             You scored {score} out of {questions.length}
           </div>
-          <div className="knowledge-level">
-            Your Rank: <span className="rank-text">{getKnowledgeLevel(score)}</span>
+          <div className="level">
+            Your Rank: <span className="rank">{getKnowledgeLevel(score)}</span>
           </div>
-          <button onClick={onExit} className="quiz-btn mt-4">Return to Profile</button>
+          <button onClick={onExit} className="button" style={{marginTop: "1rem"}}>Return to Profile</button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="quiz-container">
-      <div className="quiz-playing">
+    <div className="quiz-box">
+      <div className="playing-box">
         
-        <div className="quiz-header">
-          <h2 className="quiz-title">{teamName} Ball Knowledge Quiz</h2>
-          <span className="quiz-progress">Question {currentQuestion + 1} / {questions.length}</span>
+        <div className="header">
+          <h2 className="title">{teamName} Ball Knowledge Quiz</h2>
+          <span className="progress">Question {currentQuestion + 1} / {questions.length}</span>
         </div>
         
-        <div className="question-text">
+        <div className="question">
           {questions[currentQuestion].question}
         </div>
         
-        <div className="options-grid">
+        <div className="grid">
           {questions[currentQuestion].options.map((option, index) => {
-            let btnClass = "option-btn";
+            let btnClass = "button-option";
             
             if (selectedAnswer !== null) {
               if (option === questions[currentQuestion].answer) {
-                btnClass = "option-btn correct";
+                btnClass = "button-option correct";
               } else if (option === selectedAnswer) {
-                btnClass = "option-btn incorrect";
+                btnClass = "button-option incorrect";
               }
             }
             
@@ -109,7 +109,7 @@ const TeamQuiz = (props) => {
           })}
         </div>
         
-        <button onClick={onExit} className="quiz-btn-small">Quit Quiz</button>
+        <button onClick={onExit} className="button-small">Quit Quiz</button>
       </div>
     </div>
   );

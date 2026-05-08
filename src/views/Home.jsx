@@ -19,35 +19,35 @@ const Home = () => {
   ];
 
   const handleTeamClick = (id) => {
-    navigate(`/teams/${id}`);
+    navigate("/teams/" + id);
   };
 
   return (
-    <div className="home-container">
-      <div className="home-hero">
-        <div className="hero-content">
-          <h1 className="hero-title">World Cup 2026</h1>
-          <p className="hero-subtitle">The Ultimate National Teams Dashboard</p>
-          <div className="hero-badge">Select a nation to begin</div>
+    <div className="home-page">
+      <div className="hero">
+        <div className="hero-text">
+          <h1 className="title">World Cup 2026</h1>
+          <p className="subtitle">The Ultimate National Teams Dashboard</p>
+          <div className="badge">Select a nation to begin</div>
         </div>
       </div>
 
-      <div className="world-cup-grid">
+      <div className="grid">
         {worldCupTeams.map(team => (
           <div 
             key={team.id} 
-            className="team-card card"
+            className="card"
             onClick={() => handleTeamClick(team.id)}
           >
-            <div className="team-crest-wrapper">
+            <div className="image-wrapper">
               <img 
-                src={`https://flagcdn.com/w160/${team.code}.png`} 
+                src={"https://flagcdn.com/w160/" + team.code + ".png"} 
                 alt={team.name} 
-                className="wc-team-crest" 
+                className="team-image" 
                 onError={(e) => { e.target.src = '/player-avatar.png'; }}
               />
             </div>
-            <h3 className="wc-team-name">{team.name}</h3>
+            <h3 className="team-name">{team.name}</h3>
           </div>
         ))}
       </div>

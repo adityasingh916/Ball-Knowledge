@@ -72,76 +72,90 @@ const SquadBuilder = () => {
     setGameStatus('playing');
   };
 
+  let headerStatusClass = "stat";
+  if (gameStatus === 'lost') {
+    headerStatusClass = "stat text-red";
+  }
+
   return (
-    <div className="squad-builder-container">
-      <div className="sb-header">
-        <h1 className="sb-title">Budget Squad Builder</h1>
-        <div className="sb-tracker-panel">
-          <div className="sb-stat">
-            <span className="sb-label">Total Budget</span>
-            <span className="sb-value">${budget}M</span>
+    <div className="page">
+      <div className="header">
+        <h1 className="title">Budget Squad Builder</h1>
+        <div className="stats-box">
+          <div className="stat">
+            <span className="label">Total Budget</span>
+            <span className="value">${budget}M</span>
           </div>
-          <div className={`sb-stat ${gameStatus === 'lost' ? 'text-red' : ''}`}>
-            <span className="sb-label">Total Spent</span>
-            <span className="sb-value">${totalSpent}M</span>
+          <div className={headerStatusClass}>
+            <span className="label">Total Spent</span>
+            <span className="value">${totalSpent}M</span>
           </div>
-          <div className="sb-stat">
-            <span className="sb-label">Players</span>
-            <span className="sb-value">{selectedSquad.length} / 11</span>
+          <div className="stat">
+            <span className="label">Players</span>
+            <span className="value">{selectedSquad.length} / 11</span>
           </div>
         </div>
       </div>
 
       {gameStatus === 'lost' && (
-        <div className="sb-status-banner sb-busted">
+        <div className="banner busted">
           <h2>Busted! You exceeded the budget.</h2>
-          <button onClick={resetGame} className="sb-reset-btn">Try Again</button>
+          <button onClick={resetGame} className="button">Try Again</button>
         </div>
       )}
       
       {gameStatus === 'won' && (
-        <div className="sb-status-banner sb-won">
+        <div className="banner won">
           <h2>Challenge Completed! You Win!</h2>
-          <button onClick={resetGame} className="sb-reset-btn">Play Again</button>
+          <button onClick={resetGame} className="button">Play Again</button>
         </div>
       )}
 
-      <div className="sb-layout">
+      <div className="layout">
         
-        <div className="sb-available-players">
-          <h2 className="sb-section-title">Available Players</h2>
-          <div className="sb-grid">
+        <div className="players-section">
+          <h2 className="subtitle">Available Players</h2>
+          <div className="grid">
             {players.map(player => {
               const isSelected = selectedSquad.find(p => p.id === player.id);
+              
+              let cardClass = "card";
+              if (isSelected) {
+                cardClass += " selected";
+              }
+              if (gameStatus !== 'playing') {
+                cardClass += " disabled";
+              }
+
               return (
                 <div 
                   key={player.id} 
-                  className={`sb-player-card ${isSelected ? 'sb-selected-card' : ''} ${gameStatus !== 'playing' ? 'sb-disabled-card' : ''}`}
+                  className={cardClass}
                   onClick={() => handleSelectPlayer(player)}
                 >
-                  <img src={player.image} alt={player.name} className="sb-player-img" />
-                  <div className="sb-player-info">
-                    <span className="sb-name">{player.name}</span>
-                    <span className="sb-price">${player.price}M</span>
+                  <img src={player.image} alt={player.name} className="image" />
+                  <div className="info">
+                    <span className="name">{player.name}</span>
+                    <span className="price">${player.price}M</span>
                   </div>
-                  {isSelected && <div className="sb-selected-overlay">Selected</div>}
+                  {isSelected && <div className="overlay">Selected</div>}
                 </div>
               );
             })}
           </div>
         </div>
 
-        <div className="sb-squad-sidebar">
-          <h2 className="sb-section-title">Your Squad</h2>
-          <div className="sb-squad-list">
+        <div className="sidebar">
+          <h2 className="subtitle">Your Squad</h2>
+          <div className="list">
             {selectedSquad.length === 0 ? (
-              <p className="sb-empty-state">No players selected yet.</p>
+              <p className="empty-text">No players selected yet.</p>
             ) : (
               selectedSquad.map((p, index) => (
-                <div key={p.id} className="sb-squad-item">
-                  <span className="sb-item-num">{index + 1}</span>
-                  <span className="sb-item-name">{p.name}</span>
-                  <span className="sb-item-price">${p.price}M</span>
+                <div key={p.id} className="list-item">
+                  <span className="number">{index + 1}</span>
+                  <span className="name">{p.name}</span>
+                  <span className="price">${p.price}M</span>
                 </div>
               ))
             )}

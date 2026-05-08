@@ -44,20 +44,20 @@ const PlayerProfile = (props) => {
   }
 
   return (
-    <div className="player-profile-card">
-      <div className="profile-header">
-        <div className="profile-main-info">
-          <div className="player-avatar-container">
-            <img src={displayImageUrl} alt={player.name} className="player-avatar" />
+    <div className="profile-box">
+      <div className="header-box">
+        <div className="info-box">
+          <div className="image-wrapper">
+            <img src={displayImageUrl} alt={player.name} className="image" />
           </div>
-          <div className="jersey-number">{jerseyNumber}</div>
-          <div className="name-container">
-            <h2 className="player-name">{player.name}</h2>
-            <div className="player-badges">
-              <span className="badge position-badge">{player.position}</span>
+          <div className="number">{jerseyNumber}</div>
+          <div className="name-box">
+            <h2 className="title">{player.name}</h2>
+            <div className="badges">
+              <span className="badge">{player.position}</span>
               
               {countryName !== "" ? (
-                <span className="badge country-badge">{countryName}</span>
+                <span className="badge">{countryName}</span>
               ) : null}
               
             </div>
@@ -65,27 +65,27 @@ const PlayerProfile = (props) => {
         </div>
       </div>
 
-      <div className="profile-body">
-        <div className="stats-grid premium-grid">
+      <div className="body-box">
+        <div className="grid">
           <div className="stat-box">
-            <div className="stat-label">Age</div>
-            <div className="stat-value small-val">{getAge(player.dateOfBirth)}</div>
+            <div className="label">Age</div>
+            <div className="value">{getAge(player.dateOfBirth)}</div>
           </div>
           <div className="stat-box">
-            <div className="stat-label">Height</div>
-            <div className="stat-value small-val">
+            <div className="label">Height</div>
+            <div className="value">
               {player.height !== undefined ? player.height + "m" : "N/A"}
             </div>
           </div>
           <div className="stat-box">
-            <div className="stat-label">Preferred Foot</div>
-            <div className="stat-value small-val">
+            <div className="label">Preferred Foot</div>
+            <div className="value">
               {player.preferredFoot !== undefined ? player.preferredFoot : "N/A"}
             </div>
           </div>
           <div className="stat-box">
-            <div className="stat-label">Market Value</div>
-            <div className="stat-value small-val">{formatValue(player.marketValue)}</div>
+            <div className="label">Market Value</div>
+            <div className="value">{formatValue(player.marketValue)}</div>
           </div>
         </div>
 

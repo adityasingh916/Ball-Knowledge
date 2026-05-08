@@ -26,19 +26,7 @@ const TeamProfile = (props) => {
     return num.toString();
   };
 
-  const getFormClass = (result) => {
-    if (result === 'W') {
-      return 'form-badge win';
-    } else if (result === 'L') {
-      return 'form-badge loss';
-    } else if (result === 'D') {
-      return 'form-badge draw';
-    } else {
-      return 'form-badge';
-    }
-  };
-
-  let primaryColor = 'var(--accent-color)';
+  let primaryColor = 'green';
   if (team.teamColors !== undefined && team.teamColors.primary !== undefined) {
     primaryColor = team.teamColors.primary;
   }
@@ -49,47 +37,47 @@ const TeamProfile = (props) => {
   }
 
   return (
-    <div className="team-profile-container fade-in">
+    <div className="profile-box">
       
-      <div className="profile-header" style={{ borderBottom: "4px solid " + primaryColor }}>
-        <div className="profile-main-info">
+      <div className="header-box" style={{ borderBottom: "4px solid " + primaryColor }}>
+        <div className="info-box">
           <img 
             src={props.imageUrl} 
             alt={team.name} 
-            className="team-crest" 
+            className="team-image" 
           />
-          <div className="name-container">
-            <h2 className="team-name">{team.name}</h2>
-            <div className="team-badges">
+          <div className="name-box">
+            <h2 className="title">{team.name}</h2>
+            <div className="badges">
               <span className="badge">{team.gender}</span>
-              <span className="badge category-badge">{team.category.name}</span>
+              <span className="badge">{team.category.name}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="profile-body">
+      <div className="body-box">
         
-        <div className="stats-grid premium-grid">
+        <div className="grid">
           <div className="stat-box">
-            <div className="stat-label">Manager</div>
-            <div className="stat-value small-val">
+            <div className="label">Manager</div>
+            <div className="value">
               {team.manager !== undefined ? team.manager.name : 'Unknown'}
             </div>
           </div>
           <div className="stat-box">
-            <div className="stat-label">National Ranking</div>
-            <div className="stat-value">{team.ranking !== undefined ? team.ranking : 'N/A'}</div>
+            <div className="label">National Ranking</div>
+            <div className="value">{team.ranking !== undefined ? team.ranking : 'N/A'}</div>
           </div>
         </div>
 
-        <div className="form-section card mt-4">
-          <h3 className="section-title">Recent Form</h3>
-          <div className="form-badges">
+        <div className="form-box">
+          <h3 className="subtitle">Recent Form</h3>
+          <div className="badges">
             {pregameForm !== undefined && pregameForm.length > 0 ? (
               pregameForm.map((result, index) => {
                 return (
-                  <span key={index} className={getFormClass(result)}>
+                  <span key={index} className="badge">
                     {result}
                   </span>
                 );
@@ -101,9 +89,9 @@ const TeamProfile = (props) => {
         </div>
 
         {showSquad === true ? (
-          <div className="squad-section mt-4">
-            <h3 className="squad-title">Projected Starting XI</h3>
-            <div className="squad-grid starting-xi-grid">
+          <div className="squad-box">
+            <h3 className="subtitle">Projected Starting XI</h3>
+            <div className="grid">
               
               {props.squadData.slice(0, 11).map((squadMember) => {
                 
@@ -115,16 +103,16 @@ const TeamProfile = (props) => {
                 return (
                   <div 
                     key={squadMember.player.id} 
-                    className="squad-player-card"
+                    className="card"
                     onClick={() => handlePlayerClick(squadMember.player.id)}
                     style={{ cursor: 'pointer' }}
                   >
                     <img 
                       src="/player-avatar.png"
                       alt={displayName}
-                      className="squad-player-img"
+                      className="image"
                     />
-                    <span className="squad-player-name">{displayName}</span>
+                    <span className="text">{displayName}</span>
                   </div>
                 );
               })}

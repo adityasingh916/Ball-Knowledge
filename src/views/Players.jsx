@@ -88,38 +88,38 @@ const Players = () => {
   };
 
   return (
-    <div className="view-container">
-      <div className="page-header">
-        <h1 className="page-title">Player Database</h1>
-        <p className="page-subtitle">Search for any World Cup player using their ID (e.g. 12994 for Messi)</p>
+    <div className="page">
+      <div className="header">
+        <h1 className="title">Player Database</h1>
+        <p className="subtitle">Search for any World Cup player using their ID (e.g. 12994 for Messi)</p>
       </div>
 
-      <div className="search-section card">
-        <form onSubmit={handleSearch} className="search-form">
+      <div className="search-box">
+        <form onSubmit={handleSearch} className="form">
           <input 
             type="text" 
-            className="search-input"
+            className="input"
             value={playerId}
             onChange={(e) => setPlayerId(e.target.value)}
             placeholder="Enter Player ID..."
           />
-          <button type="submit" className="search-btn" disabled={loading === true}>
+          <button type="submit" className="button" disabled={loading === true}>
             {loading === true ? 'Searching...' : 'Search'}
           </button>
         </form>
         
         {error !== null ? (
-          <div className="error-message">{error}</div>
+          <div className="error">{error}</div>
         ) : null}
 
-        <div className="quick-links-section">
-          <span className="quick-links-label">Popular:</span>
-          <div className="quick-links-grid">
+        <div className="links-box">
+          <span className="label">Popular:</span>
+          <div className="grid">
             {popularPlayers.map((p) => {
               return (
                 <button 
                   key={p.id} 
-                  className="quick-link-btn"
+                  className="button-small"
                   onClick={() => navigate("/players/" + p.id)}
                   disabled={loading === true}
                 >
@@ -131,9 +131,9 @@ const Players = () => {
         </div>
       </div>
 
-      <div className="player-result-section">
+      <div className="result-box">
         {loading === true ? (
-          <div className="loading-state">Loading player data...</div>
+          <div className="loading">Loading player data...</div>
         ) : null}
         
         {loading === false && playerData !== null ? (
