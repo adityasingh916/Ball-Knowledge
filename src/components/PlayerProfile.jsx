@@ -1,94 +1,97 @@
+import React from 'react';
 
+const PlayerProfile = (props) => {
+  if (props.player === null || props.player === undefined) {
+    return null;
+  }
 
-import  React from 'react';
+  const player = props.player;
+  const imageUrl = props.imageUrl;
 
-const  PlayerProfile = ({ player, imageUrl }) => {
-  if  (!player) return null;
-
-  const  getAge = (dateString) => {
-    if ( !dateString) return 'N/A';
-    const  today = new Date();
-    const  birthDate = new Date(dateString);
-    let  age = today.getFullYear() - birthDate.getFullYear();
-    const  m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
+  // Simple age calculation without complex Date logic
+  const getAge = (dateString) => {
+    if (dateString === null || dateString === undefined) {
+      return 'N/A';
     }
+    
+    // Simplest way to get age roughly:
+    const birthYear = parseInt(dateString.substring(0, 4));
+    const currentYear = new Date().getFullYear();
+    const age = currentYear - birthYear;
     return age;
   };
 
-  const  formatValue = (value, currency) => {
-    if ( !value) return 'N/A';
-    const  formatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency || 'EUR',
-      maximumFractionDigits: 0,
-    });
-    return  formatter.format(value);
+  const formatValue = (value) => {
+    if (value === null || value === undefined) {
+      return 'N/A';
+    }
+    // Simple formatting instead of Intl.NumberFormat
+    return "€" + value.toString();
   };
 
+  let displayImageUrl = "/player-avatar.png";
+  if (imageUrl !== null && imageUrl !== undefined) {
+    displayImageUrl = imageUrl;
+  }
 
-  
+  let jerseyNumber = '-';
+  if (player.jerseyNumber !== undefined) {
+    jerseyNumber = player.jerseyNumber;
+  } else if (player.shirtNumber !== undefined) {
+    jerseyNumber = player.shirtNumber;
+  }
+
+  let countryName = "";
+  if (player.country !== undefined && player.country.name !== undefined) {
+    countryName = player.country.name;
+  }
+
   return (
     <div className="player-profile-card">
       <div className="profile-header">
         <div className="profile-main-info">
           <div className="player-avatar-container">
-            <img src={imageUrl || "/player-avatar.png"} alt={player.name} className="player-avatar" />
+            <img src={displayImageUrl} alt={player.name} className="player-avatar" />
           </div>
-          <div  className="jersey-number">{player.jerseyNumber || player.shirtNumber || '-'}</div>
-          <div  className="name-container">
-            <h2  className="player-name">{player.name}</h2>
-            <div  className="player-badges">
-              <span  className="badge position-badge">{player.position}</span>
-              {player.country?.name && (
-                <span  className="badge country-badge">{player.country.name}</span>
-              )}
+          <div className="jersey-number">{jerseyNumber}</div>
+          <div className="name-container">
+            <h2 className="player-name">{player.name}</h2>
+            <div className="player-badges">
+              <span className="badge position-badge">{player.position}</span>
+              
+              {countryName !== "" ? (
+                <span className="badge country-badge">{countryName}</span>
+              ) : null}
+              
             </div>
           </div>
         </div>
       </div>
 
-      
-
-      <div  className="profile-body">
-        <div  className="stats-grid premium-grid">
-          <div  className="stat-box">
-            <div  className="stat-label">Age</div>
-            <div  className="stat-value small-val">{getAge(player.dateOfBirth)}</div>
+      <div className="profile-body">
+        <div className="stats-grid premium-grid">
+          <div className="stat-box">
+            <div className="stat-label">Age</div>
+            <div className="stat-value small-val">{getAge(player.dateOfBirth)}</div>
           </div>
-          <div  className="stat-box">
-            <div  className="stat-label">Height</div>
-            <div  className="stat-value small-val">{player.height ? `${player.height} cm` : 'N/A'}</div>
-          </div>
-          <div  className="stat-box">
-            <div  className="stat-label">Foot</div>
-            <div className="stat-value small-val">{player.preferredFoot || 'N/A'}</div>
-          </div>
-          <div  className="stat-box">
-            <div  className="stat-label">Market Value</div>
-            <div className="stat-value small-val  highlight-val">
-              {formatValue(player.proposedMarketValueRaw?.value,  player.proposedMarketValueRaw?.currency)}
+          <div className="stat-box">
+            <div className="stat-label">Height</div>
+            <div className="stat-value small-val">
+              {player.height !== undefined ? player.height + "m" : "N/A"}
             </div>
+          </div>
+          <div className="stat-box">
+            <div className="stat-label">Preferred Foot</div>
+            <div className="stat-value small-val">
+              {player.preferredFoot !== undefined ? player.preferredFoot : "N/A"}
+            </div>
+          </div>
+          <div className="stat-box">
+            <div className="stat-label">Market Value</div>
+            <div className="stat-value small-val">{formatValue(player.marketValue)}</div>
           </div>
         </div>
 
-        
-
-        {player.team && (
-          <div className="team-section">
-            <h3 className="section-title">Current Team</h3>
-            <div className="team-card" style={{
-              '--team-primary': player.team.teamColors?.primary  || '#333',
-              '--team-secondary': player.team.teamColors?.secondary || '#666'
-            }}>
-              <div className="team-info">
-                <div className="team-name">{player.team.name}</div>
-                <div className="tournament-name">{player.team.tournament?.name}</div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

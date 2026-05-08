@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { quizData } from '../data/quizData';
 
-const TeamQuiz = ({ teamId, teamName, onExit }) => {
+const TeamQuiz = (props) => {
+  const teamId = props.teamId;
+  const teamName = props.teamName;
+  const onExit = props.onExit;
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
@@ -9,7 +13,8 @@ const TeamQuiz = ({ teamId, teamName, onExit }) => {
 
   const questions = quizData[teamId];
 
-  if (!questions || questions.length === 0) {
+  // If there are no questions
+  if (questions === undefined || questions.length === 0) {
     return (
       <div className="quiz-container empty-state">
         <h2 className="quiz-title">No quiz available for {teamName} yet!</h2>
@@ -28,6 +33,7 @@ const TeamQuiz = ({ teamId, teamName, onExit }) => {
 
     setTimeout(() => {
       const nextQuestion = currentQuestion + 1;
+      
       if (nextQuestion < questions.length) {
         setCurrentQuestion(nextQuestion);
         setSelectedAnswer(null);
@@ -38,15 +44,21 @@ const TeamQuiz = ({ teamId, teamName, onExit }) => {
   };
 
   const getKnowledgeLevel = (finalScore) => {
-    if (finalScore <= 4) return "Beginner";
-    if (finalScore <= 9) return "Good Ball Knower";
-    if (finalScore <= 14) return "Elite Ball Knower";
-    return "God Level Ball Knower";
+    if (finalScore <= 4) {
+      return "Beginner";
+    } else if (finalScore <= 9) {
+      return "Good Ball Knower";
+    } else if (finalScore <= 14) {
+      return "Elite Ball Knower";
+    } else {
+      return "God Level Ball Knower";
+    }
   };
 
-  return (
-    <div className="quiz-container">
-      {showResult ? (
+  // Simple If-Else rendering instead of complex ternary operations inside JSX
+  if (showResult === true) {
+    return (
+      <div className="quiz-container">
         <div className="quiz-result">
           <h2 className="quiz-title">{teamName} Quiz Results</h2>
           <div className="score-display">
@@ -57,40 +69,51 @@ const TeamQuiz = ({ teamId, teamName, onExit }) => {
           </div>
           <button onClick={onExit} className="quiz-btn mt-4">Return to Profile</button>
         </div>
-      ) : (
-        <div className="quiz-playing">
-          <div className="quiz-header">
-            <h2 className="quiz-title">{teamName} Ball Knowledge Quiz</h2>
-            <span className="quiz-progress">Question {currentQuestion + 1} / {questions.length}</span>
-          </div>
-          <div className="question-text">
-            {questions[currentQuestion].question}
-          </div>
-          <div className="options-grid">
-            {questions[currentQuestion].options.map((option, index) => {
-              let btnClass = "option-btn";
-              if (selectedAnswer) {
-                if (option === questions[currentQuestion].answer) {
-                  btnClass += " correct";
-                } else if (option === selectedAnswer) {
-                  btnClass += " incorrect";
-                }
-              }
-              return (
-                <button 
-                  key={index} 
-                  className={btnClass} 
-                  onClick={() => handleAnswerClick(option)}
-                  disabled={selectedAnswer !== null}
-                >
-                  {option}
-                </button>
-              );
-            })}
-          </div>
-          <button onClick={onExit} className="quiz-btn-small">Quit Quiz</button>
+      </div>
+    );
+  }
+
+  // This part runs if showResult is false
+  return (
+    <div className="quiz-container">
+      <div className="quiz-playing">
+        
+        <div className="quiz-header">
+          <h2 className="quiz-title">{teamName} Ball Knowledge Quiz</h2>
+          <span className="quiz-progress">Question {currentQuestion + 1} / {questions.length}</span>
         </div>
-      )}
+        
+        <div className="question-text">
+          {questions[currentQuestion].question}
+        </div>
+        
+        <div className="options-grid">
+          {questions[currentQuestion].options.map((option, index) => {
+            let btnClass = "option-btn";
+            
+            if (selectedAnswer !== null) {
+              if (option === questions[currentQuestion].answer) {
+                btnClass = "option-btn correct";
+              } else if (option === selectedAnswer) {
+                btnClass = "option-btn incorrect";
+              }
+            }
+            
+            return (
+              <button 
+                key={index} 
+                className={btnClass} 
+                onClick={() => handleAnswerClick(option)}
+                disabled={selectedAnswer !== null}
+              >
+                {option}
+              </button>
+            );
+          })}
+        </div>
+        
+        <button onClick={onExit} className="quiz-btn-small">Quit Quiz</button>
+      </div>
     </div>
   );
 };

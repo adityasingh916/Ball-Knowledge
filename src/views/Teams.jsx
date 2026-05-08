@@ -4,7 +4,7 @@ import TeamProfile from '../components/TeamProfile';
 import TeamQuiz from '../components/TeamQuiz';
 
 const Teams = () => {
-  // useParams allows us to extract the 'id' parameter from the URL (e.g. /teams/4819 extracts 4819)
+  // useParams allows us to extract the 'id' parameter from the URL
   const { id } = useParams();
   
   // useNavigate provides a function to change the URL programmatically
@@ -13,22 +13,35 @@ const Teams = () => {
   // useState hooks to store component data that will update the UI when changed
   const [teamId, setTeamId] = useState(id || '4819'); // Default to Argentina if no ID is found
   const [teamData, setTeamData] = useState(null);
+  
+  // We will simply build a flag image URL using the team ID mapping instead of complex blob fetching
   const [teamImage, setTeamImage] = useState(null);
+  
   const [squadData, setSquadData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isQuizMode, setIsQuizMode] = useState(false);
 
   const popularTeams = [
-    { name: "Argentina", id: "4819" },
-    { name: "France", id: "4481" },
-    { name: "Brazil", id: "4748" },
-    { name: "England", id: "4713" },
-    { name: "Portugal", id: "4704" }
+    { name: "Argentina", id: "4819", code: "ar" },
+    { name: "France", id: "4481", code: "fr" },
+    { name: "Brazil", id: "4748", code: "br" },
+    { name: "England", id: "4713", code: "gb-eng" },
+    { name: "Portugal", id: "4704", code: "pt" }
   ];
 
-  // useEffect is a React Hook that runs side-effects. 
-  // The dependency array [id] means this code will ONLY run when the URL 'id' parameter changes.
+  // Helper function to find a team's country code for their flag
+  const getFlagCode = (idToFind) => {
+    let foundCode = "un"; // default unknown flag
+    for (let i = 0; i < popularTeams.length; i++) {
+      if (popularTeams[i].id === idToFind) {
+        foundCode = popularTeams[i].code;
+      }
+    }
+    return foundCode;
+  };
+
+  // useEffect runs side-effects when the URL 'id' parameter changes
   useEffect(() => {
     if (id) {
       setTeamId(id);
@@ -40,14 +53,21 @@ const Teams = () => {
 
   // An asynchronous function to fetch data from our API without blocking the UI
   const fetchTeam = async (e, directId = null) => {
-    // If this function was called by a form submit, prevent the default page refresh
-    if (e) e.preventDefault();
+    // Prevent the default form submission page refresh
+    if (e) {
+      e.preventDefault();
+    }
     
     // Determine which ID to fetch
-    const targetId = directId || teamId;
-    if (!targetId.trim()) return;
+    let targetId = teamId;
+    if (directId !== null) {
+      targetId = directId;
+      setTeamId(directId);
+    }
 
-    if (directId) setTeamId(directId);
+    if (targetId === "") {
+      return;
+    }
 
     // Update state to show loading indicators and clear out previous data
     setLoading(true);
@@ -66,50 +86,53 @@ const Teams = () => {
         }
       };
 
-      // 1. Fetch team statistics and manager info using the 'await' keyword
-      const dataUrl = `https://sportapi7.p.rapidapi.com/api/v1/team/${targetId}`;
+      // 1. Fetch team statistics
+      const dataUrl = "https://sportapi7.p.rapidapi.com/api/v1/team/" + targetId;
       const dataResponse = await fetch(dataUrl, options);
       
-      // If the API returns an error (like hitting the rate limit), throw an error to go to the catch block
-      if (!dataResponse.ok) throw new Error('Team not found or API limit reached');
+      if (dataResponse.ok === false) {
+        throw new Error('Team not found or API limit reached');
+      }
       
       const result = await dataResponse.json();
-      if (result && result.team) {
+      
+      if (result !== undefined && result.team !== undefined) {
         setTeamData(result);
+        
+        // Simple flag URL construction instead of complex Blob image fetching
+        const countryCode = getFlagCode(targetId);
+        setTeamImage("https://flagcdn.com/w160/" + countryCode + ".png");
+
       } else {
-        throw new Error('Team data not found');
+        throw new Error('Invalid team data format');
       }
 
-      // 2. Fetch image
-      try {
-        const imgUrl = `https://sportapi7.p.rapidapi.com/api/v1/team/${targetId}/image`;
-        const imgResponse = await fetch(imgUrl, options);
-        if (imgResponse.ok) {
-          const blob = await imgResponse.blob();
-          setTeamImage(URL.createObjectURL(blob));
+      // 2. Fetch the squad roster
+      const squadUrl = "https://sportapi7.p.rapidapi.com/api/v1/team/" + targetId + "/players";
+      const squadResponse = await fetch(squadUrl, options);
+      
+      if (squadResponse.ok === true) {
+        const squadResult = await squadResponse.json();
+        if (squadResult !== undefined && squadResult.players !== undefined) {
+          setSquadData(squadResult.players);
         }
-      } catch (imgErr) {
-        console.warn('Could not load team image', imgErr);
       }
-
-      // 3. Fetch squad
-      try {
-        const squadUrl = `https://sportapi7.p.rapidapi.com/api/v1/team/${targetId}/players`;
-        const squadResponse = await fetch(squadUrl, options);
-        if (squadResponse.ok) {
-          const squadResult = await squadResponse.json();
-          setSquadData(squadResult.players || []);
-        }
-      } catch (sqErr) {
-        console.warn('Could not load squad', sqErr);
-      }
+      
+      // We manually turn off loading state at the end
+      setLoading(false);
 
     } catch (err) {
       console.error(err);
       setError(err.message);
       setTeamData(null);
-    } finally {
-      setLoading(false);
+      setLoading(false); // Make sure to stop loading if an error happens
+    }
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (teamId !== "") {
+      navigate("/teams/" + teamId);
     }
   };
 
@@ -121,7 +144,7 @@ const Teams = () => {
       </div>
 
       <div className="search-section card">
-        <form onSubmit={fetchTeam} className="search-form">
+        <form onSubmit={handleSearch} className="search-form">
           <input 
             type="text" 
             className="search-input"
@@ -129,61 +152,71 @@ const Teams = () => {
             onChange={(e) => setTeamId(e.target.value)}
             placeholder="Enter Team ID..."
           />
-          <button type="submit" className="search-btn" disabled={loading}>
-            {loading ? 'Searching...' : 'Search'}
+          <button type="submit" className="search-btn" disabled={loading === true}>
+            {loading === true ? 'Searching...' : 'Search'}
           </button>
         </form>
-        {error && <div className="error-message">{error}</div>}
+        
+        {error !== null ? (
+          <div className="error-message">{error}</div>
+        ) : null}
 
         <div className="quick-links-section">
           <span className="quick-links-label">Popular:</span>
           <div className="quick-links-grid">
-            {popularTeams.map(t => (
-              <button 
-                key={t.id} 
-                className="quick-link-btn"
-                onClick={(e) => fetchTeam(e, t.id)}
-                disabled={loading}
-              >
-                {t.name}
-              </button>
-            ))}
+            {popularTeams.map((team) => {
+              return (
+                <button 
+                  key={team.id} 
+                  className="quick-link-btn"
+                  onClick={() => navigate("/teams/" + team.id)}
+                  disabled={loading === true}
+                >
+                  {team.name}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
 
-      <div className="player-result-section">
-        {loading && <div className="loading-state">Loading team data...</div>}
+      <div className="team-result-section">
+        {loading === true ? (
+          <div className="loading-state">Loading team data...</div>
+        ) : null}
         
-        {!loading && teamData && isQuizMode && (
-          <TeamQuiz 
-            teamId={teamId} 
-            teamName={teamData.team.name} 
-            onExit={() => setIsQuizMode(false)} 
-          />
-        )}
-
-        {!loading && teamData && !isQuizMode && (
-          <div className="team-profile-wrapper">
-            <div className="quiz-banner-frame">
-              <div className="quiz-banner-content">
-                <div className="quiz-banner-icon">🧠</div>
-                <div className="quiz-banner-text">
-                  <h3>Ball Knowledge Challenge</h3>
-                  <p>Test your trivia skills on {teamData.team.name}!</p>
-                </div>
+        {loading === false && teamData !== null ? (
+          <div className="team-content-wrapper">
+            
+            <div className="game-mode-banner card">
+              <div className="banner-content">
+                <h3>Test Your Knowledge!</h3>
+                <p>Are you a true {teamData.team.name} fan? Take the ultimate quiz.</p>
               </div>
-              <button className="start-quiz-btn" onClick={() => setIsQuizMode(true)}>
-                Take the Quiz
+              <button 
+                className="btn-primary" 
+                onClick={() => setIsQuizMode(true)}
+              >
+                Enter Game Mode
               </button>
             </div>
-            <TeamProfile 
-              teamData={teamData} 
-              imageUrl={teamImage} 
-              squadData={squadData} 
-            />
+
+            {isQuizMode === true ? (
+              <TeamQuiz 
+                teamId={teamId} 
+                teamName={teamData.team.name} 
+                onExit={() => setIsQuizMode(false)} 
+              />
+            ) : (
+              <TeamProfile 
+                teamData={teamData} 
+                imageUrl={teamImage} 
+                squadData={squadData} 
+              />
+            )}
+            
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

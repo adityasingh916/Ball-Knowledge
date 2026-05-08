@@ -6,16 +6,16 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-brand">Ball Knowledge</div>
       <div className="nav-links">
-        <NavLink to="/" className={({isActive}) => `nav-btn ${isActive ? 'active' : ''}`}>
+        <NavLink to="/" className="nav-btn">
           Home
         </NavLink>
-        <NavLink to="/teams" className={({isActive}) => `nav-btn ${isActive ? 'active' : ''}`}>
+        <NavLink to="/teams" className="nav-btn">
           Teams
         </NavLink>
-        <NavLink to="/players" className={({isActive}) => `nav-btn ${isActive ? 'active' : ''}`}>
+        <NavLink to="/players" className="nav-btn">
           Players
         </NavLink>
-        <NavLink to="/squad-builder" className={({isActive}) => `nav-btn ${isActive ? 'active' : ''}`}>
+        <NavLink to="/squad-builder" className="nav-btn">
           Squad Builder
         </NavLink>
       </div>
