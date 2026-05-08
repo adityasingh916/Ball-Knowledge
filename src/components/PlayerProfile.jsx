@@ -8,13 +8,11 @@ const PlayerProfile = (props) => {
   const player = props.player;
   const imageUrl = props.imageUrl;
 
-  // Simple age calculation without complex Date logic
   const getAge = (dateString) => {
     if (dateString === null || dateString === undefined) {
       return 'N/A';
     }
     
-    // Simplest way to get age roughly:
     const birthYear = parseInt(dateString.substring(0, 4));
     const currentYear = new Date().getFullYear();
     const age = currentYear - birthYear;
@@ -25,7 +23,6 @@ const PlayerProfile = (props) => {
     if (value === null || value === undefined) {
       return 'N/A';
     }
-    // Simple formatting instead of Intl.NumberFormat
     return "€" + value.toString();
   };
 

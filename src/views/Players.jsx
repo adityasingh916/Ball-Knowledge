@@ -3,18 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import PlayerProfile from '../components/PlayerProfile';
 
 const Players = () => {
-  // Extract the player 'id' parameter from the URL using React Router
   const { id } = useParams();
   const navigate = useNavigate();
   
-  // Initialize component state using the useState hook
-  const [playerId, setPlayerId] = useState(id || '12994'); // Default to Messi (ID 12994)
+  const [playerId, setPlayerId] = useState(id || '12994');
   const [playerData, setPlayerData] = useState(null);
   
-  // Track whether the API request is currently loading
   const [loading, setLoading] = useState(false);
   
-  // Store any errors that happen during the API fetch
   const [error, setError] = useState(null);
 
   const popularPlayers = [
@@ -24,13 +20,11 @@ const Players = () => {
     { name: "Kylian Mbappé", id: "826643" }
   ];
 
-  // useEffect hook to trigger a search automatically whenever the URL 'id' changes
   useEffect(() => {
     if (id !== undefined) {
       setPlayerId(id);
       fetchPlayer(null, id);
     } else {
-      // Fetch default player if no ID is present
       fetchPlayer(null, playerId);
     }
   }, [id]);

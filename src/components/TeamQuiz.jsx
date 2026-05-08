@@ -13,7 +13,6 @@ const TeamQuiz = (props) => {
 
   const questions = quizData[teamId];
 
-  // If there are no questions
   if (questions === undefined || questions.length === 0) {
     return (
       <div className="quiz-container empty-state">
@@ -55,7 +54,6 @@ const TeamQuiz = (props) => {
     }
   };
 
-  // Simple If-Else rendering instead of complex ternary operations inside JSX
   if (showResult === true) {
     return (
       <div className="quiz-container">
@@ -73,7 +71,6 @@ const TeamQuiz = (props) => {
     );
   }
 
-  // This part runs if showResult is false
   return (
     <div className="quiz-container">
       <div className="quiz-playing">

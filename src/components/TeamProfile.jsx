@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 const TeamProfile = (props) => {
   const navigate = useNavigate();
 
-  // Simple if checks instead of complex && or destructuring
   if (props.teamData === null) {
     return null;
   }
@@ -13,7 +12,6 @@ const TeamProfile = (props) => {
     return null;
   }
   
-  // Extracting variables simply
   const team = props.teamData.team;
   const pregameForm = props.teamData.pregameForm;
 
@@ -25,7 +23,6 @@ const TeamProfile = (props) => {
     if (num === null || num === undefined) {
       return 'N/A';
     }
-    // Simple string conversion instead of complex Intl formatters
     return num.toString();
   };
 
@@ -41,13 +38,11 @@ const TeamProfile = (props) => {
     }
   };
 
-  // Simple variable assignment instead of optional chaining (?.)
   let primaryColor = 'var(--accent-color)';
   if (team.teamColors !== undefined && team.teamColors.primary !== undefined) {
     primaryColor = team.teamColors.primary;
   }
 
-  // Determine if we should show the squad section
   let showSquad = false;
   if (props.squadData !== undefined && props.squadData.length > 0) {
     showSquad = true;
